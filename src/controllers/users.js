@@ -21,7 +21,7 @@ const registerUsers = async (req, res) => {
         }
         const encryptionPassword = await bcrypt.hash(password, 10);
         const queryRegistration = await knex('users').insert({ name, email, password: encryptionPassword }).returning('*');
-        return res.status(200).json({ message: "O usuario foi cadastrado com sucesso!" });
+        return res.status(201).json({ message: "O usuario foi cadastrado com sucesso!" });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
