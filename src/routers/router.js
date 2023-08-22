@@ -9,17 +9,17 @@ const { schemaLogin } = require('../schema/schemaLogin');
 const { registerTasks, listTasks, detailTask, updateTask, deleteTask } = require('../controllers/todos');
 const { schemaTodos } = require('../schema/schemaTodos');
 
-router.get('/', listUsers)
-router.post('/register', validationSchema(schemaUser), registerUsers);
+router.get('/user/list', listUsers)
+router.post('/user/register', validationSchema(schemaUser), registerUsers);
 router.post('/login', validationSchema(schemaLogin), login);
 router.get('/email', verifyEmail);
 
 router.use(authorization);
 router.get('/user', verifyUser);
-router.post('/todos', validationSchema(schemaTodos), registerTasks);
-router.get('/todos', listTasks);
+router.post('/todos/register', validationSchema(schemaTodos), registerTasks);
+router.get('/todos/list', listTasks);
 router.get('/todos/detail/:id', detailTask);
-router.put('/todos/:id', validationSchema(schemaTodos), updateTask);
-router.delete('/todos/:id', deleteTask);
+router.put('/todos/edit/:id', updateTask);
+router.delete('/todos/delete/:id', deleteTask);
 
 module.exports = router;
