@@ -5,7 +5,8 @@ const registerTasks = async (req, res) => {
 
     try {
         const registerTask = await knex('todos').insert({ task, active, data: new Date(), user_id: req.user.id }).returning("*");
-        return res.status(201).json(registerTask);
+        console.log("🚀 ~ file: todos.js:8 ~ registerTasks ~ registerTask:", registerTask)
+        return res.status(201).json(registerTask[0]);
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
     }
