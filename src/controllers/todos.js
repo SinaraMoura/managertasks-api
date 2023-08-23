@@ -8,7 +8,7 @@ const registerTasks = async (req, res) => {
         return res.status(201).json(registerTask);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ mensagem: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 const listTasks = async (req, res) => {
@@ -17,7 +17,7 @@ const listTasks = async (req, res) => {
         return res.json(listTask)
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ mensagem: 'Internal server error' })
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }
 
@@ -32,7 +32,7 @@ const detailTask = async (req, res) => {
         return res.status(200).json(detailTask);
     } catch (error) {
         console.log("🚀 ~ file: todos.js:34 ~ detailTask ~ error:", error)
-        return res.status(500).json({ mensagem: 'Internal server error' })
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }
 const updateTask = async (req, res) => {
@@ -49,7 +49,7 @@ const updateTask = async (req, res) => {
         return res.status(204).json(updateTask);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ mensagem: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 
@@ -57,29 +57,28 @@ const deleteTask = async (req, res) => {
     const { id } = req.params
 
     try {
-        const existTask = await knex('todos').where({ id }).andWhere("user_id", req.user.id).first();
+        const existTask = await knex('todos').where({ id }).andWhere("user_id", req.user.id).first().debug();
         console.log("🚀 ~ file: todos.js:61 ~ deleteTask ~ existTask:", existTask)
         if (!existTask) {
             return res.status(404).json({ message: "Task not found" });
         }
-        const query = "select * from todos where active = false"
+        const query = "select * from todos where active = true"
         const { rows } = await knex.raw(query)
-        console.log("🚀 ~ file: todos.js:66 ~ deleteTask ~ rows:", rows)
 
         const verifyTask = rows.find(task => {
-            return task.id === existTask.id;
+            return task.id === Number(existTask.id);
         })
         console.log("🚀 ~ file: todos.js:70 ~ verifyTask ~ verifyTask:", verifyTask)
 
         if (!verifyTask) {
-            return res.status(404).json({ message: "This task cannot be deleted" })
+            return res.status(400).json({ message: "Task cannot be deleted as it has not yet been completed!" })
         }
 
         await knex('todos').where({ id }).del()
         return res.status(204).send()
     } catch (error) {
         console.log(error)
-        return res.status(500).json({ mensagem: 'Internal server error' })
+        return res.status(500).json({ message: 'Internal server error' })
     }
 }
 
