@@ -7,7 +7,6 @@ const listUsers = async (req, res) => {
         const user = await knex('users');
         return res.json(user);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: 'Erro interno do servidor' })
     }
 }

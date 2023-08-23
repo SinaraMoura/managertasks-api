@@ -7,7 +7,6 @@ const registerTasks = async (req, res) => {
         const registerTask = await knex('todos').insert({ task, active, data: new Date(), user_id: req.user.id }).returning("*");
         return res.status(201).json(registerTask);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -16,7 +15,6 @@ const listTasks = async (req, res) => {
         const listTask = await knex('todos').where({ user_id: req.user.id }).returning("*");
         return res.json(listTask)
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
@@ -28,10 +26,8 @@ const detailTask = async (req, res) => {
     }
     try {
         const detailTask = await knex('todos as to').join('users as us', 'us.id', '=', 'to.user_id').select('to.user_id', 'to.task', 'us.name').where({ id: req.user.id });
-        console.log("🚀 ~ file: todos.js:31 ~ detailTask ~ detailTask:", detailTask)
         return res.status(200).json(detailTask);
     } catch (error) {
-        console.log("🚀 ~ file: todos.js:34 ~ detailTask ~ error:", error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
@@ -48,7 +44,6 @@ const updateTask = async (req, res) => {
 
         return res.status(204).json(updateTask);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ message: "Internal server error" });
     }
 }
@@ -58,7 +53,6 @@ const deleteTask = async (req, res) => {
 
     try {
         const existTask = await knex('todos').where({ id }).andWhere("user_id", req.user.id).first().debug();
-        console.log("🚀 ~ file: todos.js:61 ~ deleteTask ~ existTask:", existTask)
         if (!existTask) {
             return res.status(404).json({ message: "Task not found" });
         }
@@ -68,7 +62,6 @@ const deleteTask = async (req, res) => {
         const verifyTask = rows.find(task => {
             return task.id === Number(existTask.id);
         })
-        console.log("🚀 ~ file: todos.js:70 ~ verifyTask ~ verifyTask:", verifyTask)
 
         if (!verifyTask) {
             return res.status(400).json({ message: "Task cannot be deleted as it has not yet been completed!" })
@@ -77,7 +70,6 @@ const deleteTask = async (req, res) => {
         await knex('todos').where({ id }).del()
         return res.status(204).send()
     } catch (error) {
-        console.log(error)
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
